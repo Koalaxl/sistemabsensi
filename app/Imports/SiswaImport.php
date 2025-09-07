@@ -6,28 +6,28 @@ use App\Models\Siswa;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Concerns\WithValidation;
+use PhpOffice\PhpSpreadsheet\Shared\StringHelper;
 
-
-class SiswaImport implements ToModel, WithHeadingRow
+class SiswaImport implements ToModel, WithHeadingRow, WithValidation
 {
-public function model(array $row)
+    public function model(array $row)
     {
-        Log::info($row); // Debug hasil import
-
-        // Pastikan ada key nisn
-        if (!isset($row['nisn'])) {
-            return null; // skip jika kolom nisn tidak ada
-        }
-
-        if (Siswa::where('nisn', $row['nisn'])->exists()) {
-            return null;
-        }
-
         return new Siswa([
-            'nisn'       => $row['nisn'],
-            'nama_siswa' => $row['nama_siswa'],
-            'kelas'      => $row['kelas'],
-            'no_ortu'    => $row['no_ortu'],
+            'nisn'       => $row['nisn'] ?? null,
+            'nama_siswa' => $row['nama_siswa'] ?? null,
+            'kelas'      => $row['kelas'] ?? null,
+            'no_ortu'    => $row['no_ortu'] ?? null,
         ]);
+    }
+
+    public function rules(): array
+    {
+        return [
+            'nisn'       => 'required',
+            'nama_siswa' => 'required',
+            'kelas'      => 'required',
+            'no_ortu'    => 'required|numeric',
+        ];
     }
 }

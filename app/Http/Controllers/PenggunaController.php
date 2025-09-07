@@ -57,7 +57,7 @@ class PenggunaController extends Controller
             'id_guru' => $request->id_guru,
         ]);
 
-        return redirect()->route('pengguna.index')->with('success', 'Pengguna berhasil ditambahkan.');
+        return redirect()->route('admin.pengguna.index')->with('success', 'Pengguna berhasil ditambahkan.');
     }
 
     public function edit(Pengguna $pengguna)
@@ -93,18 +93,18 @@ class PenggunaController extends Controller
 
         $pengguna->update($data);
 
-        return redirect()->route('pengguna.index')->with('success', 'Pengguna berhasil diperbarui.');
+        return redirect()->route('admin.pengguna.index')->with('success', 'Pengguna berhasil diperbarui.');
     }
 
     public function destroy(Pengguna $pengguna)
     {
         $pengguna->delete();
-        return redirect()->route('pengguna.index')->with('success', 'Pengguna berhasil dihapus.');
+        return redirect()->route('admin.pengguna.index')->with('success', 'Pengguna berhasil dihapus.');
     }
 
     public function hapusSemua()
     {
         Pengguna::truncate();
-        return redirect()->route('pengguna.index')->with('success', 'Semua data pengguna berhasil dihapus.');
+        return redirect()->route('admin.pengguna.index')->with('success', 'Semua data pengguna berhasil dihapus.');
     }
 }

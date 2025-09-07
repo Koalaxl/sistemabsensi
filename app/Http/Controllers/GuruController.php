@@ -22,18 +22,28 @@ class GuruController extends Controller
     // Menampilkan daftar guru dengan filter mata pelajaran
     public function index(Request $request)
     {
-        if ($redirect = $this->cekAdmin($request)) return $redirect;
-
         $query = Guru::query();
 
-        if ($request->mata_pelajaran) {
+        // Filter berdasarkan mata pelajaran (opsional)
+        if ($request->filled('mata_pelajaran')) {
             $query->where('mata_pelajaran', $request->mata_pelajaran);
         }
 
-        $guru = $query->get();
+        // Search berdasarkan nama_guru, nip, atau mata_pelajaran
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_guru', 'like', "%{$search}%")
+                ->orWhere('nip', 'like', "%{$search}%")
+                ->orWhere('mata_pelajaran', 'like', "%{$search}%");
+            });
+        }
 
-        // Ambil semua mata pelajaran unik untuk dropdown filter
-        $listMataPelajaran = Guru::select('mata_pelajaran')->distinct()->pluck('mata_pelajaran');
+        $guru = $query->orderBy('nama_guru')->get();
+
+        $listMataPelajaran = Guru::select('mata_pelajaran')
+            ->distinct()
+            ->pluck('mata_pelajaran');
 
         return view('admin.guru.index', compact('guru', 'listMataPelajaran'));
     }
@@ -56,7 +66,7 @@ class GuruController extends Controller
         ]);
 
         Guru::create($request->all());
-        return redirect()->route('guru.index')->with('success', 'Data guru berhasil ditambahkan.');
+        return redirect()->route('admin.guru.index')->with('success', 'Data guru berhasil ditambahkan.');
     }
 
     public function edit(Request $request, Guru $guru)
@@ -77,7 +87,7 @@ class GuruController extends Controller
         ]);
 
         $guru->update($request->all());
-        return redirect()->route('guru.index')->with('success', 'Data guru berhasil diperbarui.');
+        return redirect()->route('admin.guru.index')->with('success', 'Data guru berhasil diperbarui.');
     }
 
     public function destroy(Request $request, Guru $guru)
@@ -85,7 +95,7 @@ class GuruController extends Controller
         if ($redirect = $this->cekAdmin($request)) return $redirect;
 
         $guru->delete();
-        return redirect()->route('guru.index')->with('success', 'Data guru berhasil dihapus.');
+        return redirect()->route('admin.guru.index')->with('success', 'Data guru berhasil dihapus.');
     }
 
     // Import data guru
@@ -99,7 +109,7 @@ class GuruController extends Controller
 
         Excel::import(new GuruImport, $request->file('file'));
 
-        return redirect()->route('guru.index')->with('success', 'Data guru berhasil diimport.');
+        return redirect()->route('admin.guru.index')->with('success', 'Data guru berhasil diimport.');
     }
 
     // Hapus semua guru berdasarkan mata pelajaran
@@ -109,7 +119,7 @@ class GuruController extends Controller
 
         Guru::where('mata_pelajaran', $request->mata_pelajaran)->delete();
 
-        return redirect()->route('guru.index')->with('success', 'Semua guru dengan mata pelajaran ' . $request->mata_pelajaran . ' berhasil dihapus.');
+        return redirect()->route('admin.guru.index')->with('success', 'Semua guru dengan mata pelajaran ' . $request->mata_pelajaran . ' berhasil dihapus.');
     }
 
     // Hapus semua data guru
@@ -119,7 +129,7 @@ class GuruController extends Controller
 
         DB::table('guru')->delete();
 
-        return redirect()->route('guru.index')
+        return redirect()->route('admin.guru.index')
             ->with('success', 'Semua data guru berhasil dihapus.');
     }
 }

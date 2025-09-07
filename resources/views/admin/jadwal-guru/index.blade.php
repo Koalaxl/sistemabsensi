@@ -16,7 +16,7 @@
     <!-- Action Buttons & Notifications -->
     <div class="row mb-4">
         <div class="col-md-6">
-            <a href="{{ route('jadwal-guru.create') }}" class="btn btn-primary shadow-sm rounded-3">
+            <a href="{{ route('admin.jadwal-guru.create') }}" class="btn btn-primary shadow-sm rounded-3">
                 <i class="bi bi-plus-circle me-2"></i> Tambah Jadwal
             </a>
         </div>
@@ -39,7 +39,7 @@
             </h5>
         </div>
         <div class="card-body p-4">
-            <form action="{{ route('jadwal-guru.index') }}" method="GET" class="row g-3 align-items-end">
+            <form action="{{ route('admin.jadwal-guru.index') }}" method="GET" class="row g-3 align-items-end">
                 <div class="col-md-3">
                     <label for="hari_filter" class="form-label text-muted">Hari</label>
                     <select name="hari" id="hari_filter" class="form-select rounded-3">
@@ -247,12 +247,12 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-1">
-                                    <a href="{{ route('jadwal-guru.edit', $item->id_jadwal) }}" 
+                                    <a href="{{ route('admin.jadwal-guru.edit', $item->id_jadwal) }}" 
                                        class="btn btn-sm btn-warning rounded-3"
                                        data-bs-toggle="tooltip" title="Edit">
                                         <i class="bi bi-pencil-fill"></i>
                                     </a>
-                                    <form action="{{ route('jadwal-guru.destroy', $item->id_jadwal) }}" 
+                                    <form action="{{ route('admin.jadwal-guru.destroy', $item->id_jadwal) }}" 
                                           method="POST" class="d-inline-block" 
                                           onsubmit="return confirm('Yakin mau hapus jadwal ini?')">
                                         @csrf @method('DELETE')
@@ -294,7 +294,7 @@
         </div>
         <div class="col-md-6 text-md-end">
             <div class="d-flex justify-content-md-end gap-2">
-                <a href="{{ route('jadwal-guru.index') }}" class="btn btn-secondary rounded-3">
+                <a href="{{ route('admin.jadwal-guru.index') }}" class="btn btn-secondary rounded-3">
                     <i class="bi bi-arrow-clockwise me-2"></i> Reset Filter
                 </a>
             </div>

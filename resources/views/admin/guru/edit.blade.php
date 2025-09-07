@@ -23,7 +23,7 @@
         </div>
     @endif
 
-    <form action="{{ route('guru.update', $guru) }}" method="POST">
+    <form action="{{ route('admin.guru.update', $guru) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -55,7 +55,7 @@
         </div>
 
         <button type="submit" class="btn btn-success">Update</button>
-        <a href="{{ route('guru.index') }}" class="btn btn-secondary">Batal</a>
+        <a href="{{ route('admin.guru.index') }}" class="btn btn-secondary">Batal</a>
     </form>
 </div>
 @endsection

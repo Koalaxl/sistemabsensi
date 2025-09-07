@@ -16,7 +16,7 @@
     <!-- Action Buttons & Notifications -->
     <div class="row mb-4">
         <div class="col-md-6">
-            <a href="{{ route('pengguna.create') }}" class="btn btn-primary shadow-sm rounded-3">
+            <a href="{{ route('admin.pengguna.create') }}" class="btn btn-primary shadow-sm rounded-3">
                 <i class="bi bi-plus-circle me-2"></i> Tambah Pengguna
             </a>
         </div>
@@ -39,7 +39,7 @@
             </h5>
         </div>
         <div class="card-body p-4">
-            <form action="{{ route('pengguna.index') }}" method="GET" class="row g-3 align-items-end">
+            <form action="{{ route('admin.pengguna.index') }}" method="GET" class="row g-3 align-items-end">
                 <div class="col-md-4">
                     <label for="role_filter" class="form-label text-muted">Role</label>
                     <select name="role" id="role_filter" class="form-select rounded-3">
@@ -111,12 +111,12 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-1">
-                                    <a href="{{ route('pengguna.edit', $item->id_pengguna) }}" 
+                                    <a href="{{ route('admin.pengguna.edit', $item->id_pengguna) }}" 
                                        class="btn btn-sm btn-warning rounded-3" 
                                        data-bs-toggle="tooltip" title="Edit">
                                         <i class="bi bi-pencil-fill"></i>
                                     </a>
-                                    <form action="{{ route('pengguna.destroy', $item->id_pengguna) }}" 
+                                    <form action="{{ route('admin.pengguna.destroy', $item->id_pengguna) }}" 
                                           method="POST" class="d-inline-block" 
                                           onsubmit="return confirm('Yakin mau hapus pengguna ini?')">
                                         @csrf @method('DELETE')
@@ -148,7 +148,7 @@
     <!-- Bulk Actions -->
     <div class="row">
         <div class="col-md-6">
-            <form action="{{ route('pengguna.hapusSemua') }}" method="POST" 
+            <form action="{{ route('admin.pengguna.hapusSemua') }}" method="POST" 
                   onsubmit="return confirm('Yakin hapus semua data pengguna?')" class="mb-4">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn btn-danger rounded-3 shadow-sm">
@@ -157,7 +157,7 @@
             </form>
         </div>
         <div class="col-md-6 text-md-end">
-            <a href="{{ route('pengguna.index') }}" class="btn btn-secondary rounded-3">
+            <a href="{{ route('admin.pengguna.index') }}" class="btn btn-secondary rounded-3">
                 <i class="bi bi-arrow-clockwise me-2"></i> Reset Filter
             </a>
         </div>

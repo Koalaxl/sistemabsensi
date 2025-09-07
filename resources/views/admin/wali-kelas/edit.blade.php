@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h2>Edit Wali Kelas</h2>
-    <form action="{{ route('wali-kelas.update', $wali_kela->id) }}" method="POST">
+    <form action="{{ route('admin.wali-kelas.update', $wali_kela->id) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -25,7 +25,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Update</button>
-        <a href="{{ route('wali-kelas.index') }}" class="btn btn-secondary">Batal</a>
+        <a href="{{ route('admin.wali-kelas.index') }}" class="btn btn-secondary">Batal</a>
     </form>
 </div>
 @endsection

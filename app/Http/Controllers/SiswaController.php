@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\SiswaImport;
 use Illuminate\Support\Facades\DB;
 use App\Exports\SiswaTemplateExport;
+use Illuminate\Support\Facades\Log;
 
 class SiswaController extends Controller
 {
@@ -22,7 +23,7 @@ class SiswaController extends Controller
     // =========================
     // List siswa
     // =========================
-    public function index(Request $request)
+   public function index(Request $request)
     {
         $user = session('user');
         $query = Siswa::query();
@@ -40,6 +41,14 @@ class SiswaController extends Controller
             $query->where('kelas', $request->kelas);
         }
 
+        // ✅ Tambahkan search (cari berdasarkan nisn atau nama_siswa)
+        if ($request->search) {
+            $query->where(function($q) use ($request) {
+                $q->where('nisn', 'like', '%' . $request->search . '%')
+                ->orWhere('nama_siswa', 'like', '%' . $request->search . '%');
+            });
+        }
+
         $siswa = $query->get();
 
         // Ambil semua kelas unik
@@ -52,9 +61,10 @@ class SiswaController extends Controller
     {
         $user = session('user');
         if ($user['role'] !== 'admin') {
-            abort(403, 'Hanya admin yang bisa menambah siswa.');
+            abort(403, 'Hanya admin yang bisa tambah siswa.');
         }
-        return view('admin.siswa.create');
+
+        return view('admin.siswa.create'); // arahkan ke form tambah siswa
     }
 
     public function store(Request $request)
@@ -72,7 +82,7 @@ class SiswaController extends Controller
         ]);
 
         Siswa::create($request->all());
-        return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil ditambahkan.');
+        return redirect()->route('admin.siswa.index')->with('success', 'Data siswa berhasil ditambahkan.');
     }
 
     public function edit(Siswa $siswa)
@@ -99,7 +109,7 @@ class SiswaController extends Controller
         ]);
 
         $siswa->update($request->all());
-        return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil diperbarui.');
+        return redirect()->route('admin.siswa.index')->with('success', 'Data siswa berhasil diperbarui.');
     }
 
     public function destroy(Siswa $siswa)
@@ -110,7 +120,17 @@ class SiswaController extends Controller
         }
 
         $siswa->delete();
-        return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil dihapus.');
+        return redirect()->route('admin.siswa.index')->with('success', 'Data siswa berhasil dihapus.');
+    }
+    public function show(Siswa $siswa)
+    {
+        $user = session('user');
+        // misalnya hanya admin yg boleh lihat detail
+        if ($user['role'] !== 'admin') {
+            abort(403, 'Hanya admin yang bisa melihat detail siswa.');
+        }
+
+        return view('admin.siswa.show', compact('siswa'));
     }
 
     // =========================
@@ -124,12 +144,20 @@ class SiswaController extends Controller
         }
 
         $request->validate([
-            'file' => 'required|mimes:xlsx,csv'
+            'file' => 'required|mimes:xlsx,xls,csv'
         ]);
 
-        Excel::import(new SiswaImport, $request->file('file'));
+        try {
+            Excel::import(new SiswaImport, $request->file('file'));
+            return redirect()->route('admin.siswa.index')
+                ->with('success', 'Data siswa berhasil diimport.');
+        } catch (\Exception $e) {
+            // Simpan error ke log biar bisa dicek developer
+            Log::error('Import siswa gagal: ' . $e->getMessage());
 
-        return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil diimport.');
+            return redirect()->back()
+                ->with('error', 'Import gagal! Pastikan format file sesuai template. Error: ' . $e->getMessage());
+        }
     }
 
     public function downloadTemplate()
@@ -139,7 +167,14 @@ class SiswaController extends Controller
             abort(403, 'Hanya admin yang bisa download template.');
         }
 
-        return Excel::download(new SiswaTemplateExport, 'template_siswa.xlsx');
+        try {
+            return Excel::download(new SiswaTemplateExport, 'template_siswa.xlsx');
+        } catch (\Exception $e) {
+            Log::error('Download template siswa gagal: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'Template gagal diunduh. Silakan coba lagi.');
+        }
     }
 
     // =========================
@@ -153,7 +188,7 @@ class SiswaController extends Controller
         }
 
         Siswa::where('kelas', $request->kelas)->delete();
-        return redirect()->route('siswa.index')->with('success', 'Semua siswa di kelas ' . $request->kelas . ' berhasil dihapus.');
+        return redirect()->route('admin.siswa.index')->with('success', 'Semua siswa di kelas ' . $request->kelas . ' berhasil dihapus.');
     }
 
     public function hapusSemua()
@@ -166,7 +201,7 @@ class SiswaController extends Controller
         DB::table('kehadiran_siswa')->delete();
         DB::table('siswa')->delete();
 
-        return redirect()->route('siswa.index')
+        return redirect()->route('admin.siswa.index')
             ->with('success', 'Semua data siswa dan kehadirannya berhasil dihapus.');
     }
 }

@@ -15,7 +15,7 @@
         </div>
     @endif
 
-    <form action="{{ route('jadwal-guru.update', $jadwal->id_jadwal) }}" method="POST">
+    <form action="{{ route('admin.jadwal-guru.update', $jadwal->id_jadwal) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -88,7 +88,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Update</button>
-        <a href="{{ route('jadwal-guru.index') }}" class="btn btn-secondary">Batal</a>
+        <a href="{{ route('admin.jadwal-guru.index') }}" class="btn btn-secondary">Batal</a>
     </form>
 </div>
 @endsection

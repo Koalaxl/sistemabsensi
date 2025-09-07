@@ -26,7 +26,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('guru.store') }}" method="POST">
+                    <form action="{{ route('admin.guru.store') }}" method="POST">
                         @csrf
                         
                         <div class="mb-3">
@@ -66,7 +66,7 @@
                             <button type="submit" class="btn btn-success">
                                 <i class="bi bi-save me-1"></i> Simpan
                             </button>
-                            <a href="{{ route('guru.index') }}" class="btn btn-secondary">
+                            <a href="{{ route('admin.guru.index') }}" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left me-1"></i> Batal
                             </a>
                         </div>

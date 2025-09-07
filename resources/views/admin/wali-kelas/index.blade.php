@@ -16,7 +16,7 @@
     <!-- Action Buttons & Notifications -->
     <div class="row mb-4">
         <div class="col-md-6">
-            <a href="{{ route('wali-kelas.create') }}" class="btn btn-primary shadow-sm rounded-3">
+            <a href="{{ route('admin.wali-kelas.create') }}" class="btn btn-primary shadow-sm rounded-3">
                 <i class="bi bi-plus-circle me-2"></i> Tambah Wali Kelas
             </a>
         </div>
@@ -42,7 +42,7 @@
             <div class="row g-3 align-items-end">
                 <!-- Filter Form -->
                 <div class="col-lg-6">
-                    <form action="{{ route('wali-kelas.index') }}" method="GET" class="row g-3 align-items-end">
+                    <form action="{{ route('admin.wali-kelas.index') }}" method="GET" class="row g-3 align-items-end">
                         <div class="col-md-6">
                             <label for="kelas_filter" class="form-label text-muted">Kelas</label>
                             <select name="kelas_filter" id="kelas_filter" class="form-select rounded-3">
@@ -64,7 +64,7 @@
 
                 <!-- Search -->
                 <div class="col-lg-3">
-                    <form action="{{ route('wali-kelas.index') }}" method="GET" class="d-grid">
+                    <form action="{{ route('admin.wali-kelas.index') }}" method="GET" class="d-grid">
                         <input type="text" name="search" class="form-control rounded-3"
                                placeholder="Cari guru atau kelas..." value="{{ request('search') }}">
                         <input type="hidden" name="kelas_filter" value="{{ request('kelas_filter') }}">
@@ -192,11 +192,11 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-1">
-                                    <a href="{{ route('wali-kelas.edit', $item->id) }}" 
+                                    <a href="{{ route('admin.wali-kelas.edit', $item->id) }}" 
                                        class="btn btn-sm btn-warning rounded-3" data-bs-toggle="tooltip" title="Edit">
                                         <i class="bi bi-pencil-fill"></i>
                                     </a>
-                                    <form action="{{ route('wali-kelas.destroy', $item->id) }}" 
+                                    <form action="{{ route('admin.wali-kelas.destroy', $item->id) }}" 
                                           method="POST" class="d-inline-block"
                                           onsubmit="return confirm('Yakin mau hapus wali kelas ini?')">
                                         @csrf @method('DELETE')
@@ -236,7 +236,7 @@
             </form>
         </div>
         <div class="col-md-6 text-md-end">
-            <a href="{{ route('wali-kelas.index') }}" class="btn btn-secondary rounded-3">
+            <a href="{{ route('admin.wali-kelas.index') }}" class="btn btn-secondary rounded-3">
                 <i class="bi bi-arrow-clockwise me-2"></i> Reset Filter
             </a>
         </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pengguna;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -12,14 +13,14 @@ class LoginController extends Controller
         return view('login');
     }
 
+    
     public function login(Request $request)
     {
-        $user = Pengguna::where('username', $request->username)
-            ->where('password', $request->password) // sebaiknya bcrypt
-            ->first();
+        $user = Pengguna::where('username', $request->username)->first();
 
-        if ($user) {
+        if ($user && Hash::check($request->password, $user->password)) {
             // simpan session
+            $request->session()->put('user', $user);
             $request->session()->put('login_id', $user->id);
             $request->session()->put('login_role', $user->role);
 

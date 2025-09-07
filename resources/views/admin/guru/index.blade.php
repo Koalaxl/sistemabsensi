@@ -22,21 +22,20 @@
 
     {{-- Tambah Data --}}
     <div class="mb-4">
-        <a href="{{ route('guru.create') }}" class="btn btn-primary shadow-sm rounded-3">
+        <a href="{{ route('admin.guru.create') }}" class="btn btn-primary shadow-sm rounded-3">
             <i class="bi bi-plus-lg"></i> Tambah Guru
         </a>
     </div>
-
-   {{-- Filter & Hapus --}}
+    {{-- Filter & Search --}}
     <div class="card shadow border-0 mb-4 rounded-4">
         <div class="card-header bg-white p-4 border-0">
-            <h5 class="mb-0">Filter dan Opsi Manajemen</h5>
+            <h5 class="mb-0">Filter, Pencarian & Opsi Manajemen</h5>
         </div>
         <div class="card-body p-4">
             <div class="row g-3 align-items-end">
 
                 {{-- Filter Mata Pelajaran --}}
-                <form action="{{ route('guru.index') }}" method="GET" class="row g-3 align-items-end col-md-6">
+                <form action="{{ route('admin.guru.index') }}" method="GET" class="row g-3 align-items-end col-md-6">
                     <div class="col-md-8">
                         <label class="form-label text-muted">Mata Pelajaran</label>
                         <select name="mata_pelajaran" class="form-select rounded-3">
@@ -55,7 +54,21 @@
                     </div>
                 </form>
 
-                {{-- Hapus Semua Guru di Mata Pelajaran yg difilter --}}
+                {{-- Search Nama/NIP/Mapel --}}
+                <form action="{{ route('admin.guru.index') }}" method="GET" class="row g-3 align-items-end col-md-6">
+                    <div class="col-md-8">
+                        <label class="form-label text-muted">Cari Guru</label>
+                        <input type="text" name="search" value="{{ request('search') }}"
+                            class="form-control rounded-3"
+                            placeholder="Nama, NIP, atau Mata Pelajaran">
+                    </div>
+                    <div class="col-md-4 d-grid">
+                        <button type="submit" class="btn btn-primary rounded-3">
+                            <i class="bi bi-search"></i> Cari
+                        </button>
+                    </div>
+                </form>
+                 {{-- Hapus Semua Guru di Mata Pelajaran yg difilter --}}
                 @if(request('mata_pelajaran'))
                 <div class="col-md-3 d-grid">
                     <form action="{{ route('guru.destroyByMataPelajaran') }}" method="POST"
@@ -64,14 +77,16 @@
                         @method('DELETE')
                         <input type="hidden" name="mata_pelajaran" value="{{ request('mata_pelajaran') }}">
                         <button type="submit" class="btn btn-danger rounded-3">
-                            <i class="bi bi-trash"></i> Hapus Filter
+                            <i class="bi bi-trash"></i> Hapus by Filter
                         </button>
                     </form>
                 </div>
                 @endif
 
             </div>
+            </div>
         </div>
+    </div>
     </div>
     {{-- Data Guru --}}
     <div class="card shadow border-0 rounded-4">
@@ -96,10 +111,10 @@
                             <td>{{ $item->mata_pelajaran }}</td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-2">
-                                    <a href="{{ route('guru.edit', $item) }}" class="btn btn-sm btn-warning rounded-3">
+                                    <a href="{{ route('admin.guru.edit', $item) }}" class="btn btn-sm btn-warning rounded-3">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
-                                    <form action="{{ route('guru.destroy', $item) }}" method="POST"
+                                    <form action="{{ route('admin.guru.destroy', $item) }}" method="POST"
                                           onsubmit="return confirm('Yakin mau hapus?')">
                                         @csrf
                                         @method('DELETE')

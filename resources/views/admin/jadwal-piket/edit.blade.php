@@ -4,7 +4,7 @@
 <div class="container">
     <h2>Edit Jadwal Piket Guru</h2>
 
-    <form action="{{ route('jadwal-piket.update', $jadwalPiketGuru->id_piket) }}" method="POST">
+    <form action="{{ route('admin.jadwal-piket.update', $jadwalPiketGuru->id_piket) }}" method="POST">
         @csrf
         @method('PUT')
         <div class="mb-3">
@@ -34,7 +34,7 @@
             <textarea name="keterangan" class="form-control">{{ $jadwalPiketGuru->keterangan }}</textarea>
         </div>
         <button type="submit" class="btn btn-success">Update</button>
-        <a href="{{ route('jadwal-piket.index') }}" class="btn btn-secondary">Batal</a>
+        <a href="{{ route('admin.jadwal-piket.index') }}" class="btn btn-secondary">Batal</a>
     </form>
 </div>
 @endsection

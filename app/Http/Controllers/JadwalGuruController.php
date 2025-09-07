@@ -18,21 +18,6 @@ class JadwalGuruController extends Controller
         return view('admin.jadwal-guru.index', compact('jadwal'));
     }
 
-    // GURU: lihat jadwalnya sendiri
-    public function indexGuru(Request $request)
-    {
-        if ($request->session()->get('login_role') !== 'guru') {
-            return redirect('/login')->withErrors(['msg' => 'Akses ditolak, hanya guru yang bisa membuka halaman ini.']);
-        }
-
-        // ambil id guru dari session
-        $idGuru = $request->session()->get('login_id');  
-
-        $jadwal = JadwalGuru::where('id_guru', $idGuru)->get();
-
-        return view('guru.jadwal.index', compact('jadwal'));
-    }
-
     public function create(Request $request)
     {
         if ($request->session()->get('login_role') !== 'admin') {
@@ -60,7 +45,7 @@ class JadwalGuruController extends Controller
 
         JadwalGuru::create($request->all());
 
-        return redirect()->route('jadwal-guru.index')->with('success', 'Jadwal guru berhasil ditambahkan');
+        return redirect()->route('admin.jadwal-guru.index')->with('success', 'Jadwal guru berhasil ditambahkan');
     }
 
     public function edit(Request $request, $id)
@@ -92,7 +77,7 @@ class JadwalGuruController extends Controller
         $jadwal = JadwalGuru::findOrFail($id);
         $jadwal->update($request->all());
 
-        return redirect()->route('jadwal-guru.index')->with('success', 'Jadwal guru berhasil diperbarui');
+        return redirect()->route('admin.jadwal-guru.index')->with('success', 'Jadwal guru berhasil diperbarui');
     }
 
     public function destroy(Request $request, $id)
@@ -104,7 +89,7 @@ class JadwalGuruController extends Controller
         $jadwal = JadwalGuru::findOrFail($id);
         $jadwal->delete();
 
-        return redirect()->route('jadwal-guru.index')->with('success', 'Jadwal guru berhasil dihapus');
+        return redirect()->route('admin.jadwal-guru.index')->with('success', 'Jadwal guru berhasil dihapus');
     }
 
     public function hapusSemua(Request $request)
@@ -114,6 +99,6 @@ class JadwalGuruController extends Controller
         }
 
         JadwalGuru::truncate(); 
-        return redirect()->route('jadwal-guru.index')->with('success', 'Semua jadwal guru berhasil dihapus');
+        return redirect()->route('admin.jadwal-guru.index')->with('success', 'Semua jadwal guru berhasil dihapus');
     }
 }

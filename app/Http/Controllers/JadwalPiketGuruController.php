@@ -30,7 +30,7 @@ class JadwalPiketGuruController extends Controller
         ]);
 
         JadwalPiketGuru::create($request->all());
-        return redirect()->route('jadwal-piket.index')->with('success', 'Jadwal piket berhasil ditambahkan.');
+        return redirect()->route('admin.jadwal-piket.index')->with('success', 'Jadwal piket berhasil ditambahkan.');
     }
 
     public function edit($id)
@@ -53,7 +53,7 @@ class JadwalPiketGuruController extends Controller
         $jadwal = JadwalPiketGuru::findOrFail($id);
         $jadwal->update($request->all());
 
-        return redirect()->route('jadwal-piket.index')->with('success', 'Jadwal piket berhasil diperbarui.');
+        return redirect()->route('admin.jadwal-piket.index')->with('success', 'Jadwal piket berhasil diperbarui.');
     }
 
     public function destroy($id)
@@ -61,13 +61,13 @@ class JadwalPiketGuruController extends Controller
         $jadwal = JadwalPiketGuru::findOrFail($id);
         $jadwal->delete();
 
-        return redirect()->route('jadwal-piket.index')
+        return redirect()->route('admin.jadwal-piket.index')
             ->with('success', 'Jadwal piket berhasil dihapus.');
     }
 
     public function hapusSemua()
     {
         JadwalPiketGuru::truncate();
-        return redirect()->route('jadwal-piket.index')->with('success', 'Semua jadwal piket berhasil dihapus.');
+        return redirect()->route('admin.jadwal-piket.index')->with('success', 'Semua jadwal piket berhasil dihapus.');
     }
 }

@@ -69,7 +69,7 @@ class WaliKelasController extends Controller
         ]);
 
         WaliKelas::create($request->all());
-        return redirect()->route('wali-kelas.index')->with('success', 'Data wali kelas berhasil ditambahkan.');
+        return redirect()->route('admin.wali-kelas.index')->with('success', 'Data wali kelas berhasil ditambahkan.');
     }
 
     public function edit(WaliKelas $wali_kelas)
@@ -96,7 +96,7 @@ class WaliKelasController extends Controller
         ]);
 
         $wali_kelas->update($request->all());
-        return redirect()->route('wali-kelas.index')->with('success', 'Data wali kelas berhasil diperbarui.');
+        return redirect()->route('admin.wali-kelas.index')->with('success', 'Data wali kelas berhasil diperbarui.');
     }
 
     public function destroy(WaliKelas $wali_kelas)
@@ -107,7 +107,7 @@ class WaliKelasController extends Controller
         }
 
         $wali_kelas->delete();
-        return redirect()->route('wali-kelas.index')->with('success', 'Data wali kelas berhasil dihapus.');
+        return redirect()->route('admin.wali-kelas.index')->with('success', 'Data wali kelas berhasil dihapus.');
     }
 
     public function hapusSemua()
@@ -119,7 +119,7 @@ class WaliKelasController extends Controller
 
         DB::table('wali_kelas')->delete();
 
-        return redirect()->route('wali-kelas.index')
+        return redirect()->route('admin.wali-kelas.index')
             ->with('success', 'Semua data wali kelas berhasil dihapus.');
     }
 }

@@ -244,7 +244,7 @@
     <!-- Bulk Actions -->
     <div class="row">
         <div class="col-md-6">
-            <form action="{{ route('admin.kehadiran-guru.hapusSemua') }}" method="POST" 
+            <form action="{{ route('kehadiran-guru.hapusSemua') }}" method="POST" 
                   onsubmit="return confirm('Yakin hapus semua data kehadiran?')">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn btn-danger rounded-3 shadow-sm">

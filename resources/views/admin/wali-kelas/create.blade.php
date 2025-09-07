@@ -18,7 +18,7 @@
         </div>
     @endif
 
-    <form action="{{ route('wali-kelas.store') }}" method="POST">
+    <form action="{{ route('admin.wali-kelas.store') }}" method="POST">
         @csrf
         <div class="mb-3">
             <label>Guru</label>

@@ -16,7 +16,7 @@
     <!-- Action Buttons & Notifications -->
     <div class="row mb-4">
         <div class="col-md-6">
-            <a href="{{ route('siswa.create') }}" class="btn btn-primary shadow-sm rounded-3">
+            <a href="{{ route('admin.siswa.create') }}" class="btn btn-primary shadow-sm rounded-3">
                 <i class="bi bi-plus-circle me-2"></i> Tambah Siswa
             </a>
         </div>
@@ -24,6 +24,13 @@
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
                     <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
@@ -42,7 +49,7 @@
             <div class="row g-3 align-items-end">
                 <!-- Filter Form -->
                 <div class="col-lg-6">
-                    <form action="{{ route('siswa.index') }}" method="GET" class="row g-3 align-items-end">
+                    <form action="{{ route('admin.siswa.index') }}" method="GET" class="row g-3 align-items-end">
                         <div class="col-md-6">
                             <label for="kelas_filter" class="form-label text-muted">Kelas</label>
                             <select name="kelas" id="kelas_filter" class="form-select rounded-3">
@@ -78,13 +85,10 @@
                 @endif
 
                 <!-- Search -->
-                <div class="col-lg-3">
-                    <form action="{{ route('siswa.index') }}" method="GET" class="d-grid">
-                        <input type="text" name="search" class="form-control rounded-3" 
-                               placeholder="Cari nama siswa..." value="{{ request('search') }}">
-                        <input type="hidden" name="kelas" value="{{ request('kelas') }}">
-                    </form>
-                </div>
+                <form method="GET" action="{{ route('admin.siswa.index') }}" class="mb-3 d-flex">
+                    <input type="text" name="search" class="form-control me-2" placeholder="Cari NISN / Nama Siswa" value="{{ request('search') }}">
+                    <button type="submit" class="btn btn-primary">Cari</button>
+                </form>
             </div>
         </div>
     </div>
@@ -220,12 +224,12 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-1">
-                                    <a href="{{ route('siswa.edit', $item->id) }}" 
+                                    <a href="{{ route('admin.siswa.edit', $item->id) }}" 
                                        class="btn btn-sm btn-warning rounded-3"
                                        data-bs-toggle="tooltip" title="Edit">
                                         <i class="bi bi-pencil-fill"></i>
                                     </a>
-                                    <form action="{{ route('siswa.destroy', $item->id) }}" method="POST" 
+                                    <form action="{{ route('admin.siswa.destroy', $item->id) }}" method="POST" 
                                           class="d-inline-block" onsubmit="return confirm('Yakin mau hapus siswa ini?')">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger rounded-3"
@@ -258,14 +262,15 @@
         <div class="col-md-6">
             <form action="{{ route('siswa.hapusSemua') }}" method="POST" class="mb-4"
                 onsubmit="return confirm('Yakin hapus semua data siswa?')">
-                @csrf @method('DELETE')
+                @csrf 
+                @method('DELETE')
                 <button type="submit" class="btn btn-danger rounded-3 shadow-sm">
                     <i class="bi bi-trash3 me-2"></i> Hapus Semua
                 </button>
             </form>
         </div>
         <div class="col-md-6 text-md-end">
-            <a href="{{ route('siswa.index') }}" class="btn btn-secondary rounded-3 me-2">
+            <a href="{{ route('admin.siswa.index') }}" class="btn btn-secondary rounded-3 me-2">
                 <i class="bi bi-arrow-clockwise me-2"></i> Reset Filter
             </a>
         </div>

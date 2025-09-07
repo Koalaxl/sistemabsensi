@@ -16,7 +16,7 @@
     <!-- Action Buttons & Notifications -->
     <div class="row mb-4">
         <div class="col-md-6">
-            <a href="{{ route('jadwal-piket.create') }}" class="btn btn-primary shadow-sm rounded-3">
+            <a href="{{ route('admin.jadwal-piket.create') }}" class="btn btn-primary shadow-sm rounded-3">
                 <i class="bi bi-plus-circle me-2"></i> Tambah Jadwal Piket
             </a>
         </div>
@@ -39,7 +39,7 @@
             </h5>
         </div>
         <div class="card-body p-4">
-            <form action="{{ route('jadwal-piket.index') }}" method="GET" class="row g-3 align-items-end">
+            <form action="{{ route('admin.jadwal-piket.index') }}" method="GET" class="row g-3 align-items-end">
                 <div class="col-md-3">
                     <label for="hari_filter" class="form-label text-muted">Hari</label>
                     <select name="hari" id="hari_filter" class="form-select rounded-3">
@@ -205,12 +205,12 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-1">
-                                    <a href="{{ route('jadwal-piket.edit', $item->id_piket) }}" 
+                                    <a href="{{ route('admin.jadwal-piket.edit', $item->id_piket) }}" 
                                        class="btn btn-sm btn-warning rounded-3"
                                        data-bs-toggle="tooltip" title="Edit">
                                         <i class="bi bi-pencil-fill"></i>
                                     </a>
-                                    <form action="{{ route('jadwal-piket.destroy', $item->id_piket) }}" 
+                                    <form action="{{ route('admin.jadwal-piket.destroy', $item->id_piket) }}" 
                                           method="POST" class="d-inline-block" 
                                           onsubmit="return confirm('Yakin mau hapus jadwal piket ini?')">
                                         @csrf @method('DELETE')
@@ -252,7 +252,7 @@
         </div>
         <div class="col-md-6 text-md-end">
             <div class="d-flex justify-content-md-end gap-2">
-                <a href="{{ route('jadwal-piket.index') }}" class="btn btn-secondary rounded-3">
+                <a href="{{ route('admin.jadwal-piket.index') }}" class="btn btn-secondary rounded-3">
                     <i class="bi bi-arrow-clockwise me-2"></i> Reset Filter
                 </a>
             </div>
