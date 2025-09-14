@@ -21,12 +21,14 @@ class LoginController extends Controller
         if ($user && Hash::check($request->password, $user->password)) {
             // simpan session
             $request->session()->put('user', $user);
-            $request->session()->put('login_id', $user->id);
-            $request->session()->put('login_role', $user->role);
 
             if ($user->role === 'admin') {
+                $request->session()->put('login_id', $user->id); // admin pakai id pengguna
+                $request->session()->put('login_role', 'admin');
                 return redirect()->route('admin.dashboard');
             } elseif ($user->role === 'guru') {
+                $request->session()->put('login_id', $user->id_guru); // guru pakai id_guru dari relasi
+                $request->session()->put('login_role', 'guru');
                 return redirect()->route('guru.dashboard');
             }
         }

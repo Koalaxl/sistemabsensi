@@ -13,9 +13,9 @@ use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\KehadiranGuruController;
 use App\Http\Controllers\KehadiranSiswaController;
 use App\Http\Controllers\RekapController;
-use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\AgendaKelasController;
 use App\Http\Controllers\JadwalController;
+use App\Http\Controllers\RekapSiswaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -116,28 +116,45 @@ function cekLoginRole(Request $request, $role)
     
     /* ==================== GURU ==================== */
     Route::prefix('guru')->name('guru.')->group(function () {
+        // ------------------- Dashboard -------------------
         Route::get('/dashboard', function (Request $request) {
             if ($redirect = cekLoginRole($request, 'guru')) return $redirect;
             return app(DashboardController::class)->guru($request);
         })->name('dashboard');
 
-        // Absensi guru
+        // ------------------- Absensi Guru -------------------
         Route::resource('absensi', KehadiranGuruController::class);
 
-        // Absensi siswa
+        // ------------------- Absensi Siswa -------------------
         Route::resource('absensi-siswa', KehadiranSiswaController::class)
-     ->names('absensi_siswa');
+            ->names('absensi_siswa');
 
-        // Jadwal guru
-         Route::get('jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+        // ------------------- Jadwal -------------------
+        Route::get('jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+        Route::get('jadwal/create', [JadwalController::class, 'create'])->name('jadwal.create');
 
-        // Rekap
-        Route::get('rekap/absen', [RekapController::class, 'absen'])->name('rekap.absen');
+        // ===== CRUD Jadwal Piket =====
+        Route::post('jadwal/piket/store', [JadwalController::class, 'storePiket'])->name('jadwal.storePiket');
+        Route::get('jadwal/piket/{id}/edit', [JadwalController::class, 'editPiket'])->name('jadwal.editPiket');
+        Route::put('jadwal/piket/{id}', [JadwalController::class, 'updatePiket'])->name('jadwal.updatePiket');
+        Route::delete('jadwal/piket/{id}', [JadwalController::class, 'destroyPiket'])->name('jadwal.destroyPiket');
 
-        // Agenda kelas
-        Route::get('agenda/kelas', [AgendaKelasController::class, 'index'])->name('agenda.kelas');
+        // ===== CRUD Jadwal Mengajar =====
+        Route::post('jadwal/mengajar/store', [JadwalController::class, 'storeMengajar'])->name('jadwal.storeMengajar');
+        Route::get('jadwal/mengajar/{id}/edit', [JadwalController::class, 'editMengajar'])->name('jadwal.editMengajar');
+        Route::put('jadwal/mengajar/{id}', [JadwalController::class, 'updateMengajar'])->name('jadwal.updateMengajar');
+        Route::delete('jadwal/mengajar/{id}', [JadwalController::class, 'destroyMengajar'])->name('jadwal.destroyMengajar');
 
-        // Absen guru (status: hadir, izin, sakit, dll)
+        // ------------------- Rekap Kehadiran Siswa -------------------
+        Route::get('rekap-siswa', [RekapSiswaController::class, 'index'])->name('rekap_siswa.index');
+        Route::get('rekap-siswa/export', [RekapSiswaController::class, 'export'])->name('rekap_siswa.export');
+
+        // ------------------- Agenda Kelas -------------------
+        Route::get('agenda', [AgendaKelasController::class, 'index'])->name('agenda.index');
+        Route::get('agenda/create', [AgendaKelasController::class, 'create'])->name('agenda.create');
+        Route::post('agenda', [AgendaKelasController::class, 'store'])->name('agenda.store');
+
+        // ------------------- Absen Guru (status: hadir/izin/sakit) -------------------
         Route::get('/absen/{status}', [KehadiranGuruController::class, 'absenGuru'])->name('absen.guru');
     });
 

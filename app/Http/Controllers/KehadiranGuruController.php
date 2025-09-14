@@ -17,6 +17,9 @@ class KehadiranGuruController extends Controller
         $role = $request->session()->get('login_role');
         $loginId = $request->session()->get('login_id');
 
+        // pastikan $bulan selalu tersedia (format: "YYYY-MM")
+        $bulan = $request->bulan ?? Carbon::now()->format('Y-m');
+
         // ✅ ADMIN
         if ($role === 'admin') {
             $query = KehadiranGuru::with('guru');
@@ -31,20 +34,25 @@ class KehadiranGuruController extends Controller
                 $search = $request->search;
                 $query->whereHas('guru', function ($q) use ($search) {
                     $q->where('nama_guru', 'like', "%{$search}%")
-                        ->orWhere('nip', 'like', "%{$search}%")
-                        ->orWhere('mata_pelajaran', 'like', "%{$search}%");
+                    ->orWhere('nip', 'like', "%{$search}%")
+                    ->orWhere('mata_pelajaran', 'like', "%{$search}%");
                 });
             }
 
             $kehadiran = $query->orderBy('tanggal', 'desc')->get();
             $listStatus = ['Hadir','Izin','Sakit','Alpha'];
-            return view('admin.kehadiran-guru.index', compact('kehadiran','listStatus'));
+
+            // kirim $bulan juga supaya view admin tidak error jika membutuhkan filter bulan
+            return view('admin.kehadiran-guru.index', compact('kehadiran','listStatus','bulan'));
         }
 
         // ✅ GURU
         if ($role === 'guru') {
             $guruId = $loginId;
-            $query = KehadiranGuru::where('id_guru', $guruId);
+
+            // build query untuk guru sekaligus filter bulan
+            $query = KehadiranGuru::where('id_guru', $guruId)
+                ->whereRaw("DATE_FORMAT(tanggal, '%Y-%m') = ?", [$bulan]);
 
             if ($request->filled('status')) {
                 $query->where('status', $request->status);
@@ -53,13 +61,62 @@ class KehadiranGuruController extends Controller
                 $query->whereDate('tanggal', $request->tanggal);
             }
 
-            $kehadiran = $query->orderBy('tanggal','desc')->get();
-            $listStatus = ['Hadir','Izin','Sakit','Alpha'];
-            return view('guru.absensi.index', compact('kehadiran','listStatus'));
-        }
+            // ambil hasil sekali, terurut
+            $kehadiran = $query->orderBy('tanggal', 'desc')->get();
 
+            // Variabel tambahan untuk view (tidak mengubah apapun di view)
+            $startOfMonth = Carbon::parse($bulan)->startOfMonth();
+            $daysInMonth  = $startOfMonth->daysInMonth;
+            $today        = Carbon::today();
+
+            // bangun map tanggal => status dari query kehadiran
+            $absensiMap = [];
+            foreach ($kehadiran as $k) {
+                $absensiMap[Carbon::parse($k->tanggal)->format('Y-m-d')] = $k->status;
+            }
+
+            // warna status (sama seperti yang dipakai view sebelumnya)
+            $statusColors = [
+                'Hadir'  => 'bg-green-500 text-white',
+                'Sakit'  => 'bg-blue-500 text-white',
+                'Izin'   => 'bg-yellow-400 text-white',
+                'Alpha'  => 'bg-red-500 text-white',
+                'Kosong' => 'bg-gray-200 text-gray-700',
+            ];
+
+            // hitung rekap per hari (dan tandai Kosong => Alpha untuk tanggal lampau)
+            $rekap = ['Hadir'=>0,'Sakit'=>0,'Izin'=>0,'Alpha'=>0,'Kosong'=>0];
+            for ($day = 1; $day <= $daysInMonth; $day++) {
+                $date = $startOfMonth->copy()->day($day);
+                $dateStr = $date->format('Y-m-d');
+                $status = $absensiMap[$dateStr] ?? 'Kosong';
+
+                // Jika kosong tapi tanggal sudah lewat → dianggap Alpha
+                if ($status === 'Kosong' && $date->lt($today)) {
+                    $status = 'Alpha';
+                }
+
+                if (! isset($rekap[$status])) {
+                    $rekap[$status] = 0;
+                }
+                $rekap[$status]++;
+
+                // update supaya view bisa langsung membaca status final per tanggal
+                $absensiMap[$dateStr] = $status;
+            }
+
+            $listStatus = ['Hadir','Izin','Sakit','Alpha'];
+
+            return view('guru.absensi.index', compact(
+                'kehadiran','listStatus','bulan',
+                'startOfMonth','daysInMonth','today',
+                'absensiMap','statusColors','rekap'
+            ));
+        }
+        
         abort(403);
     }
+
 
     public function create(Request $request)
     {
